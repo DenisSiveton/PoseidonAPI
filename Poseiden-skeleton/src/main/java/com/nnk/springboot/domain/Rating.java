@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Rating")
+@Table(name = "rating")
 public class Rating {
     // TODO: Map columns in data table RATING with corresponding java fields --> DONE
 
@@ -26,6 +26,11 @@ public class Rating {
 
     @Column(name = "orderNumber")
     private int orderNumber;
+
+    public Rating(){};
+
+    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int i) {
+    }
 
     public int getId() {
         return id;
