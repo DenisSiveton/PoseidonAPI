@@ -42,7 +42,7 @@
 					<td style="width: 10%" th:text="${bidList.id}"></td>
 					<td th:text="${bidList.account}"></td>
 					<td th:text="${bidList.type}"></td>
-					<td style="width: 25%" th:text="${curvePoint.bidQuantity}"></td>
+					<td style="width: 25%" th:text="${bidList.bidQuantity}"></td>
 					<td style="width: 15%" class="text-center">
 						<a th:href="@{/bidList/update/{id}(id=${bidList.id})}">Edit</a>&nbsp;|&nbsp;
 						<a th:href="@{/bidList/delete/{id}(id=${bidList.id})}">Delete</a>
