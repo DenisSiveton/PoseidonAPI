@@ -18,6 +18,7 @@ public class CurvePoint {
     private int id;
 
     @Column (name = "CurveId")
+    @NotBlank(message = "Must not be null")
     private int curveId;
 
     @Column (name = "asOfDate")
@@ -31,6 +32,11 @@ public class CurvePoint {
 
     @Column (name = "creationDate")
     private String creationDate;
+
+    public CurvePoint() {}
+
+    public CurvePoint(int i, double v, double v1) {
+    }
 
     public int getId() {
         return id;
