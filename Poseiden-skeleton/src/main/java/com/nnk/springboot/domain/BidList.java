@@ -12,15 +12,18 @@ import java.sql.Timestamp;
 @Table(name = "BidList")
 public class BidList {
     // TODO: Map columns in data table BIDLIST with corresponding java fields --> DONE
+
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    @Column(name ="BidListId")
-    private int BidListId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "Id")
+    private int id;
 
     @Column(name ="account")
+    @NotBlank(message = "Account is mandatory")
     private String account;
 
     @Column(name ="type")
+    @NotBlank(message = "Type is mandatory")
     private String type;
 
     @Column(name ="bidQuantity")
@@ -80,12 +83,21 @@ public class BidList {
     @Column(name ="side")
     private String side;
 
-    public int getBidListId() {
-        return BidListId;
+    public BidList() {
     }
 
-    public void setBidListId(int bidListId) {
-        BidListId = bidListId;
+    public BidList(String account_test, String type_test, double bidQuantity_test) {
+        this.account = account_test;
+        this.type = type_test;
+        this.bidQuantity = bidQuantity_test;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int bidListId) {
+        id = bidListId;
     }
 
     public String getAccount() {
