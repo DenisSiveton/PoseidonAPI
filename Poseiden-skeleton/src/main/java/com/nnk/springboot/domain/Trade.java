@@ -9,10 +9,11 @@ import java.sql.Timestamp;
 @Table(name = "Trade")
 public class Trade {
     // TODO: Map columns in data table TRADE with corresponding java fields
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TradeId")
-    private int tradeId;
+    @Column (name = "Id")
+    private int id;
 
     @Column(name = "account")
     private String account;
@@ -74,12 +75,21 @@ public class Trade {
     @Column(name = "side")
     private String side;
 
-    public int getTradeId() {
-        return tradeId;
+    public Trade() {
     }
 
-    public void setTradeId(int tradeId) {
-        this.tradeId = tradeId;
+    public Trade(String account, String type, double buyQuantity) {
+        this.account = account;
+        this.type = type;
+        this.buyQuantity = buyQuantity;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int tradeId) {
+        this.id = tradeId;
     }
 
     public String getAccount() {

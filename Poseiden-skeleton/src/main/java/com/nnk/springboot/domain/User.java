@@ -2,6 +2,7 @@ package com.nnk.springboot.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "Users")
@@ -16,6 +17,7 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password is mandatory")
+    @Pattern(regexp ="^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     @Column(name = "password")
     private String password;
 

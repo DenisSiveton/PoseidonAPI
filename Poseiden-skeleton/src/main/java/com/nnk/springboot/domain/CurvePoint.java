@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
@@ -18,7 +19,8 @@ public class CurvePoint {
     private int id;
 
     @Column (name = "CurveId")
-    private int curveId;
+    @NotNull(message = "Must not be null")
+    private Integer curveId;
 
     @Column (name = "asOfDate")
     private String asOfDate;
@@ -31,6 +33,14 @@ public class CurvePoint {
 
     @Column (name = "creationDate")
     private String creationDate;
+
+    public CurvePoint() {}
+
+    public CurvePoint(int curveId, double term, double value) {
+        this.curveId = curveId;
+        this.term = term;
+        this.value = value;
+    }
 
     public int getId() {
         return id;
