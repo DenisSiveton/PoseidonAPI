@@ -29,7 +29,11 @@ public class Rating {
 
     public Rating(){};
 
-    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int i) {
+    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int orderNumber) {
+        this.moodysRating = moodys_rating;
+        this.sandPRating = sand_pRating;
+        this.fitchRating = fitch_rating;
+        this.orderNumber = orderNumber;
     }
 
     public int getId() {

@@ -36,6 +36,12 @@ public class RuleName {
     }
 
     public RuleName(String rule_name, String description, String json, String template, String sql, String sql_part) {
+        this.name = rule_name;
+        this.description = description;
+        this.json = json;
+        this.template = template;
+        this.sqlStr = sql;
+        this.sqlPart = sql_part;
     }
 
     public int getId() {
