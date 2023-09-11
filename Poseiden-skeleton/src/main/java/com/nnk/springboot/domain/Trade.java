@@ -78,7 +78,10 @@ public class Trade {
     public Trade() {
     }
 
-    public Trade(String trade_account, String type) {
+    public Trade(String account, String type, double buyQuantity) {
+        this.account = account;
+        this.type = type;
+        this.buyQuantity = buyQuantity;
     }
 
     public int getId() {
