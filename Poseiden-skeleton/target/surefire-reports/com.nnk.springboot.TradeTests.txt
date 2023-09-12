@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.nnk.springboot.TradeTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.158 s <<< FAILURE! - in com.nnk.springboot.TradeTests
+tradeTest(com.nnk.springboot.TradeTests)  Time elapsed: 0.024 s  <<< ERROR!
+org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [null]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
+	at com.nnk.springboot.TradeTests.tradeTest(TradeTests.java:27)
+Caused by: org.hibernate.exception.ConstraintViolationException: could not execute statement
+	at com.nnk.springboot.TradeTests.tradeTest(TradeTests.java:27)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'account' cannot be null
+	at com.nnk.springboot.TradeTests.tradeTest(TradeTests.java:27)
+

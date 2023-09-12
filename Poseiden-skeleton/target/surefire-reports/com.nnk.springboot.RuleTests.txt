@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.nnk.springboot.RuleTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.136 s <<< FAILURE! - in com.nnk.springboot.RuleTests
+ruleTest(com.nnk.springboot.RuleTests)  Time elapsed: 0.004 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "com.nnk.springboot.domain.RuleName.getName()" is null
+	at com.nnk.springboot.RuleTests.ruleTest(RuleTests.java:29)
+
