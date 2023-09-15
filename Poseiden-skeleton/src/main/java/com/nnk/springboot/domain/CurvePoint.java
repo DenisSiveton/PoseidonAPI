@@ -15,28 +15,28 @@ public class CurvePoint {
     // TODO: Map columns in data table CURVEPOINT with corresponding java fields --> DONE
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "Id")
+    @Column (name = "id")
     private int id;
 
-    @Column (name = "CurveId")
+    @Column (name = "curve_id")
     @NotNull(message = "Must not be null")
     private Integer curveId;
 
-    @Column (name = "asOfDate")
+    @Column (name = "as_Of_date")
     private String asOfDate;
 
     @Column (name = "term")
-    private double term;
+    private Double term;
 
     @Column (name = "value")
-    private double value;
+    private Double value;
 
-    @Column (name = "creationDate")
+    @Column (name = "creation_date")
     private String creationDate;
 
     public CurvePoint() {}
 
-    public CurvePoint(int curveId, double term, double value) {
+    public CurvePoint(Integer curveId, Double term, Double value) {
         this.curveId = curveId;
         this.term = term;
         this.value = value;
@@ -50,11 +50,11 @@ public class CurvePoint {
         this.id = id;
     }
 
-    public int getCurveId() {
+    public Integer getCurveId() {
         return curveId;
     }
 
-    public void setCurveId(int curveId) {
+    public void setCurveId(Integer curveId) {
         this.curveId = curveId;
     }
 
@@ -66,19 +66,19 @@ public class CurvePoint {
         this.asOfDate = asOfDate;
     }
 
-    public double getTerm() {
+    public Double getTerm() {
         return term;
     }
 
-    public void setTerm(double term) {
+    public void setTerm(Double term) {
         this.term = term;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
