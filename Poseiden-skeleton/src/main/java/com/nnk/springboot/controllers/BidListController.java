@@ -52,7 +52,7 @@ public class BidListController {
         return "bidList/update";
     }
 
-    @PostMapping("/bidList/update/{id}")
+    @PatchMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid @RequestBody BidList bidList,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Bid and return list Bid --> DONE
@@ -64,7 +64,7 @@ public class BidListController {
         return "redirect:/bidList/list";
     }
 
-    @GetMapping("/bidList/delete/{id}")
+    @DeleteMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Bid by Id and delete the bid, return to Bid list --> DONE
         BidList bidList = bidListRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid bidList Id:" + id));

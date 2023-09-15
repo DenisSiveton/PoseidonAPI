@@ -1,3 +1,5 @@
-insert into bid_list(Id, account, type, bid_quantity, ask_quantity, ask) VALUES (1, 'acc_1', 'type_1', 8.3,0.0,0.0);
-insert into bid_list(Id, account, type, bid_quantity, ask_quantity, ask) VALUES (2, 'acc_2', 'type_2', 12.0,0.0,0.0);
-insert into bid_list(Id, account, type, bid_quantity, ask_quantity, ask) VALUES (3, 'acc_1', 'type_2', 5.5,0.0,0.0);
+insert into bid_list(Id, account, type, bid_quantity) VALUES (1, 'acc_1', 'type_1', 8.3);
+insert into bid_list(Id, account, type, bid_quantity) VALUES (2, 'acc_2', 'type_2', 12.0);
+insert into bid_list(Id, account, type, bid_quantity) VALUES (3, 'acc_1', 'type_2', 5.5);
+
+insert into Users(fullname, username, password, role) VALUES ('User Test', 'Usertest', '$2a$10$3.GD7d4o4pNREE2HdbY52O5VINdNLOSe1W7LT4txvo7NxPElYcVEO', 'USER');
