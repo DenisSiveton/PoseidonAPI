@@ -42,20 +42,13 @@ public class BidListTests {
 	@Test
 	@DisplayName("Test that gets a list of BidList")
 	public void givenBidListList_whenFindAll_thenReturnBidList(){
-		// ARRANGE
-		BidList bidListOne = new BidList("Account One", "Type One", 10d);
-		BidList bidListTwo = new BidList("Account Two", "Type Two", 20d);
-
-		bidListRepository.save(bidListOne);
-		bidListRepository.save(bidListTwo);
-
 		// ACT
 		List<BidList> bidLists = bidListRepository.findAll();
 
 		// ASSERT
 		assertThat(bidLists).isNotEmpty();
-		assertThat(bidLists.size()).isEqualTo(2);
-		assertThat(bidLists.get(0).getAccount()).isEqualTo("Account One");
+		assertThat(bidLists.size()).isEqualTo(3);
+		assertThat(bidLists.get(0).getAccount()).isEqualTo("acc_1");
 	}
 
 	@Test
