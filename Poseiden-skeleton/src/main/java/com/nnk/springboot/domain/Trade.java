@@ -22,16 +22,16 @@ public class Trade {
     private String type;
 
     @Column(name = "buyQuantity")
-    private double buyQuantity;
+    private Double buyQuantity;
 
     @Column(name = "sellQuantity")
-    private double sellQuantity;
+    private Double sellQuantity;
 
     @Column(name = "buyPrice")
-    private double buyPrice;
+    private Double buyPrice;
 
     @Column(name = "sellPrice")
-    private double sellPrice;
+    private Double sellPrice;
 
     @Column(name = "tradeDate")
     private Timestamp tradeDate;
@@ -108,35 +108,35 @@ public class Trade {
         this.type = type;
     }
 
-    public double getBuyQuantity() {
+    public Double getBuyQuantity() {
         return buyQuantity;
     }
 
-    public void setBuyQuantity(double buyQuantity) {
+    public void setBuyQuantity(Double buyQuantity) {
         this.buyQuantity = buyQuantity;
     }
 
-    public double getSellQuantity() {
+    public Double getSellQuantity() {
         return sellQuantity;
     }
 
-    public void setSellQuantity(double sellQuantity) {
+    public void setSellQuantity(Double sellQuantity) {
         this.sellQuantity = sellQuantity;
     }
 
-    public double getBuyPrice() {
+    public Double getBuyPrice() {
         return buyPrice;
     }
 
-    public void setBuyPrice(double buyPrice) {
+    public void setBuyPrice(Double buyPrice) {
         this.buyPrice = buyPrice;
     }
 
-    public double getSellPrice() {
+    public Double getSellPrice() {
         return sellPrice;
     }
 
-    public void setSellPrice(double sellPrice) {
+    public void setSellPrice(Double sellPrice) {
         this.sellPrice = sellPrice;
     }
 
