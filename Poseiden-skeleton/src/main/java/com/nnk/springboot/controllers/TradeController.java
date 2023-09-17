@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -34,7 +31,7 @@ public class TradeController {
     }
 
     @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, BindingResult result, Model model) {
+    public String validate(@Valid @RequestBody Trade trade, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Trade list --> DONE
         if (!result.hasErrors()) {
             tradeRepository.save(trade);
@@ -52,8 +49,8 @@ public class TradeController {
         return "trade/update";
     }
 
-    @PostMapping("/trade/update/{id}")
-    public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
+    @PatchMapping("/trade/update/{id}")
+    public String updateTrade(@PathVariable("id") Integer id, @Valid @RequestBody Trade trade,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Trade and return Trade list --> DONE
         if (result.hasErrors()) {
@@ -64,7 +61,7 @@ public class TradeController {
         return "redirect:/trade/list";
     }
 
-    @GetMapping("/trade/delete/{id}")
+    @DeleteMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Trade by Id and delete the Trade, return to Trade list --> DONE
         Trade trade = tradeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid trade Id:" + id));
