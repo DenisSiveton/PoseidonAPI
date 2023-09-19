@@ -26,7 +26,7 @@ public class BidListController {
     private BidListRepository bidListRepository;
 
     /**
-     * This methods retrieves all BidList from database and list them for the user.
+     * This methods retrieves all BidLists from database and list them for the user.
      *
      * @param model Web UI container. Contains all the BidLists
      * @return URI bidList/list. Show table with all BidLists
@@ -53,7 +53,7 @@ public class BidListController {
     /**
      * This method checks if the data from the form are consistent and valid for a new BidList.
      * If the checks pass then add the new BidList to the database.
-     *      It then retrieves all BidList from database and list them in the UI for the user.
+     *      It then retrieves all BidLists from database and list them in the UI for the user.
      * If the checks fail, the user is redirected to the form for a second attempt with an error message
      *      explaining why the request failed.
      *
@@ -75,12 +75,12 @@ public class BidListController {
     }
 
     /**
-     * This method retrieves the data of the BidList form the database.
+     * This method retrieves the data of the BidList from the database.
      * It then generates a form filled with the data for modification.
      *
      * @param id Id of the BidList the user wants to update
      * @param model Web UI container. Contains the data of the desired BidList
-     * @return URI bidList/add. Show form with input filled with BidList's data
+     * @return URI bidList/update. Show form with input filled with BidList's data
      */
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
@@ -93,7 +93,7 @@ public class BidListController {
     /**
      * This method checks if the data from the form are consistent and valid to update the BidList.
      * If the checks pass then it updates the BidList into the Database using the updated data from the form.
-     *      It then retrieves all BidList from database and list them in the UI for the user.
+     *      It then retrieves all BidLists from database and list them in the UI for the user.
      * If the checks fail, the user is redirected to the form for a second attempt with an error message
      *      explaining why the request failed.
      *
@@ -118,7 +118,7 @@ public class BidListController {
 
     /**
      * This method deletes a BidList from the Database.
-     * It then retrieves all BidList from database and list them in the UI for the user.
+     * It then retrieves all BidLists from database and list them in the UI for the user.
      *
      * @param id Id of the BidList the user wants to delete
      * @param model Web UI container. Contains all the remaining BidLists
