@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class HomeController
 {
@@ -19,5 +21,11 @@ public class HomeController
 		return "redirect:/bidList/list";
 	}
 
-
+	@RequestMapping("/default")
+	public String defaultAfterLogin(HttpServletRequest request) {
+		if (request.isUserInRole("ADMIN")) {
+			return "redirect:/admin/home";
+		}
+		return "redirect:/";
+	}
 }
