@@ -5,10 +5,10 @@ import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.controllers.RatingController;
 import com.nnk.springboot.controllers.RuleNameController;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -123,7 +124,7 @@ public class RuleNameControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(patch("/ruleName/update/{id}", ruleNameIdToUpdate).with(csrf()).content(ruleNameToString)
+        mvc.perform(post("/ruleName/update/{id}", ruleNameIdToUpdate).with(csrf()).content(ruleNameToString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/ruleName/list"));
@@ -150,7 +151,7 @@ public class RuleNameControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(delete("/ruleName/delete/{id}", ruleNameIdToDelete).with(csrf()))
+        mvc.perform(get("/ruleName/delete/{id}", ruleNameIdToDelete).with(csrf()))
                 .andExpect(redirectedUrl("/ruleName/list"));;
 
             //second request must return updated RuleName list minus deleted RuleName
@@ -163,5 +164,80 @@ public class RuleNameControllerITest {
         assertThat(result.getModelAndView().getViewName()).isEqualTo("ruleName/list");
         assertThat(expectedUpdatedRuleNameList.size()).isEqualTo(2);
         assertThat(expectedUpdatedRuleNameList.get(1).getDescription()).isEqualTo("description 3");
+    }
+
+    @Nested
+    @Tag("ErrorHandlingCasesTests")
+    @DisplayName("Cover and handle borderline cases when user sends partial and wrong data")
+    class ErrorHandlingCasesTest{
+
+        @Test
+        @DisplayName("Given a RuleName with missing information, when added, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ruleNameValidate_ShouldReturnCorrectURI_WhenErrorInRuleNameEntry() throws Exception {
+            //ARRANGE
+            RuleName ruleNameToAdd = new RuleName("", "description error", "template error");
+
+            String ruleNameToString = MAPPER.writeValueAsString(ruleNameToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/ruleName/validate").with(csrf()).content(ruleNameToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(resultModelAndView.getViewName()).isEqualTo("ruleName/add");
+        }
+
+        @Test
+        @DisplayName("Given a RuleName Id that doesn't exist, when updated, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ruleNameUpdate_ShouldEmitCorrectException_WhenWrongRuleNameId() throws Exception {
+            //ARRANGE
+            String ruleNameIdToUpdate = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/ruleName/update/{id}", ruleNameIdToUpdate)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid ruleName Id:" + ruleNameIdToUpdate);
+
+        }
+
+        @Test
+        @DisplayName("Given a RuleName with missing information, when updated, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ruleNameUpdate_ShouldReturnToForm_WhenWrongRuleNameSubmitted() throws Exception {
+            //ARRANGE
+            String ruleNameIdToUpdate = "3";
+            RuleName ruleNameToAdd = new RuleName("", "description error", "template error");
+            ruleNameToAdd.setId(Integer.parseInt(ruleNameIdToUpdate));
+            String ruleNameToString = MAPPER.writeValueAsString(ruleNameToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/ruleName/update/{id}", ruleNameIdToUpdate).with(csrf()).content(ruleNameToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(result.getModelAndView().getViewName()).isEqualTo("ruleName/update");
+        }
+
+        @Test
+        @DisplayName("Given a RuleName Id that doesn't exist, when deleted, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ruleNameDelete_ShouldEmitCorrectException_WhenWrongRuleNameId() throws Exception {
+            //ARRANGE
+            String ruleNameIdToDelete = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/ruleName/delete/{id}", ruleNameIdToDelete)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid ruleName Id:" + ruleNameIdToDelete);
+
+        }
     }
 }

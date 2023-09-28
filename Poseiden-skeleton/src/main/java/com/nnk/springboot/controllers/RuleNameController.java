@@ -102,11 +102,12 @@ public class RuleNameController {
      * @return URI ruleName/list. Show table with updated RuleName
      * @return In case of error : URI ruleName/update. Returns to the form for a second attempt
      */
-    @PatchMapping("/ruleName/update/{id}")
+    @PostMapping("/ruleName/update/{id}")
     public String updateRuleName(@PathVariable("id") Integer id, @Valid @RequestBody RuleName ruleName,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list --> DONE
         if (result.hasErrors()) {
+            model.addAttribute("ruleName", ruleName);
             return "ruleName/update";
         }
         ruleNameRepository.save(ruleName);
@@ -122,7 +123,7 @@ public class RuleNameController {
      * @param model Web UI container. Contains all the remaining RuleNames
      * @return URI ruleName/list. Show table with updated RuleNames
      */
-    @DeleteMapping("/ruleName/delete/{id}")
+    @GetMapping("/ruleName/delete/{id}")
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         // TODO: Find RuleName by Id and delete the RuleName, return to Rule list --> DONE
         RuleName ruleName = ruleNameRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid ruleName Id:" + id));

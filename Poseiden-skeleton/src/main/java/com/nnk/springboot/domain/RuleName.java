@@ -15,6 +15,7 @@ public class RuleName {
     private int id;
 
     @Column(name = "name")
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
     @Column(name = "description")
