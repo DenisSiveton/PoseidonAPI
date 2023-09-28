@@ -102,11 +102,12 @@ public class TradeController {
      * @return URI trade/list. Show table with updated Trades
      * @return In case of error : URI trade/update. Returns to the form for a second attempt
      */
-    @PatchMapping("/trade/update/{id}")
+    @PostMapping("/trade/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Valid @RequestBody Trade trade,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Trade and return Trade list --> DONE
         if (result.hasErrors()) {
+            model.addAttribute("trade", trade);
             return "trade/update";
         }
         tradeRepository.save(trade);
@@ -122,7 +123,7 @@ public class TradeController {
      * @param model Web UI container. Contains all the remaining Trades
      * @return URI trade/list. Show table with updated Trades
      */
-    @DeleteMapping("/trade/delete/{id}")
+    @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Trade by Id and delete the Trade, return to Trade list --> DONE
         Trade trade = tradeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid trade Id:" + id));

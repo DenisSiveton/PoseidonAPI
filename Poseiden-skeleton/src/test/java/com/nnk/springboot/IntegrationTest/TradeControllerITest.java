@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.controllers.TradeController;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Trade;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -121,7 +122,7 @@ public class TradeControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(patch("/trade/update/{id}", tradeIdToUpdate).with(csrf()).content(tardeToString)
+        mvc.perform(post("/trade/update/{id}", tradeIdToUpdate).with(csrf()).content(tardeToString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/trade/list"));
@@ -148,7 +149,7 @@ public class TradeControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(delete("/trade/delete/{id}", tradeIdToDelete).with(csrf()))
+        mvc.perform(get("/trade/delete/{id}", tradeIdToDelete).with(csrf()))
                 .andExpect(redirectedUrl("/trade/list"));;
 
             //second request must return updated Trade list minus deleted Trade
@@ -161,5 +162,80 @@ public class TradeControllerITest {
         assertThat(result.getModelAndView().getViewName()).isEqualTo("trade/list");
         assertThat(expectedUpdatedTrade.size()).isEqualTo(2);
         assertThat(expectedUpdatedTrade.get(1).getType()).isEqualTo("type_2");
+    }
+
+    @Nested
+    @Tag("ErrorHandlingCasesTests")
+    @DisplayName("Cover and handle borderline cases when user sends partial and wrong data")
+    class ErrorHandlingCasesTest{
+
+        @Test
+        @DisplayName("Given a Trade with missing information, when added, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void tradeValidate_ShouldReturnCorrectURI_WhenErrorInTradeEntry() throws Exception {
+            //ARRANGE
+            Trade tradeToAdd = new Trade("", "type updated", 34.0);
+
+            String tradeToString = MAPPER.writeValueAsString(tradeToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/trade/validate").with(csrf()).content(tradeToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(resultModelAndView.getViewName()).isEqualTo("trade/add");
+        }
+
+        @Test
+        @DisplayName("Given a Trade Id that doesn't exist, when updated, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void tradeUpdate_ShouldEmitCorrectException_WhenWrongTradeId() throws Exception {
+            //ARRANGE
+            String tradeIdToUpdate = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/trade/update/{id}", tradeIdToUpdate)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid trade Id:" + tradeIdToUpdate);
+
+        }
+
+        @Test
+        @DisplayName("Given a Trade with missing information, when updated, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void tradeUpdate_ShouldReturnToForm_WhenWrongTradeSubmitted() throws Exception {
+            //ARRANGE
+            String tradeIdToUpdate = "3";
+            Trade tradeToAdd = new Trade("", "type updated", 34.0);
+            tradeToAdd.setId(Integer.parseInt(tradeIdToUpdate));
+            String tradeToAddToString = MAPPER.writeValueAsString(tradeToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/trade/update/{id}", tradeIdToUpdate).with(csrf()).content(tradeToAddToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(result.getModelAndView().getViewName()).isEqualTo("trade/update");
+        }
+
+        @Test
+        @DisplayName("Given a Trade Id that doesn't exist, when deleted, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void tradeDelete_ShouldEmitCorrectException_WhenWrongTradeId() throws Exception {
+            //ARRANGE
+            String tradeIdToDelete = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/trade/delete/{id}", tradeIdToDelete)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid trade Id:" + tradeIdToDelete);
+
+        }
     }
 }

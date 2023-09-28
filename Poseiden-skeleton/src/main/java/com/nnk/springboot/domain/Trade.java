@@ -16,6 +16,7 @@ public class Trade {
     private int id;
 
     @Column(name = "account")
+    @NotBlank(message = "Account is mandatory")
     private String account;
 
     @Column(name = "type")
@@ -78,7 +79,7 @@ public class Trade {
     public Trade() {
     }
 
-    public Trade(String account, String type, double buyQuantity) {
+    public Trade(String account, String type, Double buyQuantity) {
         this.account = account;
         this.type = type;
         this.buyQuantity = buyQuantity;
