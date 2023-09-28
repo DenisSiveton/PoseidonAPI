@@ -103,11 +103,12 @@ public class RatingController {
      * @return URI rating/list. Show table with updated Ratings
      * @return In case of error : URI rating/update. Returns to the form for a second attempt
      */
-    @PatchMapping("/rating/update/{id}")
+    @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid @RequestBody Rating rating,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Rating and return Rating list --> DONE
         if (result.hasErrors()) {
+            model.addAttribute("rating", rating);
             return "rating/update";
         }
         ratingRepository.save(rating);
@@ -123,7 +124,7 @@ public class RatingController {
      * @param model Web UI container. Contains all the remaining Ratings
      * @return URI rating/list. Show table with updated Ratings
      */
-    @DeleteMapping("/rating/delete/{id}")
+    @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Rating by Id and delete the Rating, return to Rating list --> DONE
         Rating rating = ratingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid rating Id:" + id));

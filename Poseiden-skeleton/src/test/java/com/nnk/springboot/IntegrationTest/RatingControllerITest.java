@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.controllers.RatingController;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -121,7 +122,7 @@ public class RatingControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(patch("/rating/update/{id}", ratingIdToUpdate).with(csrf()).content(bidToString)
+        mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf()).content(bidToString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/rating/list"));
@@ -148,7 +149,7 @@ public class RatingControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(delete("/rating/delete/{id}", ratingIdToDelete).with(csrf()))
+        mvc.perform(get("/rating/delete/{id}", ratingIdToDelete).with(csrf()))
                 .andExpect(redirectedUrl("/rating/list"));;
 
             //second request must return updated Rating list minus deleted Rating
@@ -161,5 +162,80 @@ public class RatingControllerITest {
         assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/list");
         assertThat(expectedUpdatedRatingList.size()).isEqualTo(2);
         assertThat(expectedUpdatedRatingList.get(1).getOrderNumber()).isEqualTo(3);
+    }
+
+    @Nested
+    @Tag("ErrorHandlingCasesTests")
+    @DisplayName("Cover and handle borderline cases when user sends partial and wrong data")
+    class ErrorHandlingCasesTest{
+
+        @Test
+        @DisplayName("Given a Rating with missing information, when added, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ratingPointValidate_ShouldReturnCorrectURI_WhenErrorInRatingEntry() throws Exception {
+            //ARRANGE
+            Rating ratingToAdd = new Rating("moodys 4", "sAndPRating 4", "fitch 4",null);
+
+            String ratingToString = MAPPER.writeValueAsString(ratingToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/rating/validate").with(csrf()).content(ratingToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(resultModelAndView.getViewName()).isEqualTo("rating/add");
+        }
+
+        @Test
+        @DisplayName("Given a Rating Id that doesn't exist, when updated, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ratingUpdate_ShouldEmitCorrectException_WhenWrongRatingId() throws Exception {
+            //ARRANGE
+            String ratingIdToUpdate = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/rating/update/{id}", ratingIdToUpdate)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid rating Id:" + ratingIdToUpdate);
+
+        }
+
+        @Test
+        @DisplayName("Given a Rating with missing information, when updated, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ratingUpdate_ShouldReturnToForm_WhenWrongRatingSubmitted() throws Exception {
+            //ARRANGE
+            String ratingIdToUpdate = "3";
+            Rating ratingToAdd = new Rating("moodys 4", "sAndPRating 4", "fitch 4",null);
+            ratingToAdd.setId(Integer.parseInt(ratingIdToUpdate));
+            String ratingToString = MAPPER.writeValueAsString(ratingToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf()).content(ratingToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/update");
+        }
+
+        @Test
+        @DisplayName("Given a Rating Id that doesn't exist, when deleted, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void ratingDelete_ShouldEmitCorrectException_WhenWrongRatingId() throws Exception {
+            //ARRANGE
+            String ratingIdToDelete = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/rating/delete/{id}", ratingIdToDelete)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid rating Id:" + ratingIdToDelete);
+
+        }
     }
 }

@@ -25,11 +25,12 @@ public class Rating {
     private String fitchRating;
 
     @Column(name = "order_number")
+    @NotNull(message = "Must not be null")
     private Integer orderNumber;
 
     public Rating(){};
 
-    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int orderNumber) {
+    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, Integer orderNumber) {
         this.moodysRating = moodys_rating;
         this.sandPRating = sand_pRating;
         this.fitchRating = fitch_rating;
