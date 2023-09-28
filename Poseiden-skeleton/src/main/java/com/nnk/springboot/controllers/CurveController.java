@@ -4,6 +4,7 @@ import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,8 +63,8 @@ public class CurveController {
      * @return URI curvePoint/list. Show table with updated CurvePoints
      * @return In case of error : URI curvePoint/add. Returns to the form for a second attempt
      */
-    @PostMapping("/curvePoint/validate")
-    public String validate(@Valid @RequestBody CurvePoint curvePoint, BindingResult result, Model model) {
+    @PostMapping(path = "/curvePoint/validate", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Curve list -- > DONE
         if (!result.hasErrors()) {
             curvePointRepository.save(curvePoint);
@@ -103,8 +104,8 @@ public class CurveController {
      * @return URI curvePoint/list. Show table with updated CurvePoints
      * @return In case of error : URI curvePoint/update. Returns to the form for a second attempt
      */
-    @PostMapping("/curvePoint/update/{id}")
-    public String updateCurvePoint(@PathVariable("id") Integer id, @Valid @RequestBody CurvePoint curvePoint,
+    @PostMapping(path = "/curvePoint/update/{id}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public String updateCurvePoint(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Curve and return Curve list
         if (result.hasErrors()) {

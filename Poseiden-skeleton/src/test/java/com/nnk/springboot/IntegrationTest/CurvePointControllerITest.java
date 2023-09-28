@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +52,7 @@ public class CurvePointControllerITest {
         MvcResult result = mvc.perform(get("/curvePoint/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<CurvePoint> expectedCurvePoint = (ArrayList) resultModelAndView.getModel().get("curvePoints");
+        List<CurvePoint> expectedCurvePoint = (List) resultModelAndView.getModel().get("curvePoints");
 
         assertThat(resultModelAndView.getViewName().equals("curvePoint/list"));
         assertThat(expectedCurvePoint.size()).isEqualTo(3);
@@ -72,21 +73,22 @@ public class CurvePointControllerITest {
         //ARRANGE
         CurvePoint curvePointToAdd = new CurvePoint(1,1.0,20.0);
 
-        String curvePointToString = MAPPER.writeValueAsString(curvePointToAdd);
-
         //ACT
             //first request that checks the redirect send the proper URI
-        mvc.perform(post("/curvePoint/validate").with(csrf()).content(curvePointToString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(redirectedUrl("/curvePoint/list"));
+        mvc.perform(post("/curvePoint/validate").with(csrf())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .param("curveId", String.valueOf(curvePointToAdd.getCurveId()))
+            .param("term", String.valueOf(curvePointToAdd.getTerm()))
+            .param("value", String.valueOf(curvePointToAdd.getValue()))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(redirectedUrl("/curvePoint/list"));
 
             //second request must return updated bidList list plus added BidList
         MvcResult result = mvc.perform(get("/curvePoint/list"))
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<CurvePoint> expectedUpdatedCurvePoint = (ArrayList) resultModelAndView.getModel().get("curvePoints");
+        List<CurvePoint> expectedUpdatedCurvePoint = (List) resultModelAndView.getModel().get("curvePoints");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("curvePoint/list");
@@ -117,12 +119,15 @@ public class CurvePointControllerITest {
         String curvePointIdToUpdate = "3";
         CurvePoint curvePointToUpdateWithUpdatedInfo = new CurvePoint(1,1.0,20.0);
         curvePointToUpdateWithUpdatedInfo.setId(Integer.parseInt(curvePointIdToUpdate));
-        String curvePointToString = MAPPER.writeValueAsString(curvePointToUpdateWithUpdatedInfo);
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf()).content(curvePointToString)
-                .contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("id", String.valueOf(curvePointToUpdateWithUpdatedInfo.getId()))
+                .param("curveId", String.valueOf(curvePointToUpdateWithUpdatedInfo.getCurveId()))
+                .param("term", String.valueOf(curvePointToUpdateWithUpdatedInfo.getTerm()))
+                .param("value", String.valueOf(curvePointToUpdateWithUpdatedInfo.getValue()))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/curvePoint/list"));
 
@@ -131,7 +136,7 @@ public class CurvePointControllerITest {
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<CurvePoint> expectedUpdatedCurvePoint = (ArrayList) resultModelAndView.getModel().get("curvePoints");
+        List<CurvePoint> expectedUpdatedCurvePoint = (List) resultModelAndView.getModel().get("curvePoints");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("curvePoint/list");
@@ -155,7 +160,7 @@ public class CurvePointControllerITest {
         MvcResult result = mvc.perform(get("/curvePoint/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<CurvePoint> expectedUpdatedCurvePointList = (ArrayList) resultModelAndView.getModel().get("curvePoints");
+        List<CurvePoint> expectedUpdatedCurvePointList = (List) resultModelAndView.getModel().get("curvePoints");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("curvePoint/list");
@@ -175,11 +180,12 @@ public class CurvePointControllerITest {
             //ARRANGE
             CurvePoint curvePointToAdd = new CurvePoint(null,2.0,20.0);
 
-            String curvePointToString = MAPPER.writeValueAsString(curvePointToAdd);
-
             //ACT
-            MvcResult result = mvc.perform(post("/curvePoint/validate").with(csrf()).content(curvePointToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/curvePoint/validate").with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("curveId", String.valueOf(curvePointToAdd.getCurveId()))
+                    .param("term", String.valueOf(curvePointToAdd.getTerm()))
+                    .param("value", String.valueOf(curvePointToAdd.getValue()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
@@ -208,14 +214,17 @@ public class CurvePointControllerITest {
         public void curvePointUpdate_ShouldReturnToForm_WhenWrongCurvePointSubmitted() throws Exception {
             //ARRANGE
             String curvePointIdToUpdate = "3";
-            CurvePoint curvePointToAdd = new CurvePoint(null,2.0,20.0);
-            curvePointToAdd.setId(Integer.parseInt(curvePointIdToUpdate));
-            String curvePointToString = MAPPER.writeValueAsString(curvePointToAdd);
+            CurvePoint curvePointToUpdateWithUpdatedInfo = new CurvePoint(null,2.0,20.0);
+            curvePointToUpdateWithUpdatedInfo.setId(Integer.parseInt(curvePointIdToUpdate));
 
             //ACT
             //first request that checks the request was properly redirected
-            MvcResult result = mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf()).content(curvePointToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("id", String.valueOf(curvePointToUpdateWithUpdatedInfo.getId()))
+                    .param("curveId", String.valueOf(curvePointToUpdateWithUpdatedInfo.getCurveId()))
+                    .param("term", String.valueOf(curvePointToUpdateWithUpdatedInfo.getTerm()))
+                    .param("value", String.valueOf(curvePointToUpdateWithUpdatedInfo.getValue()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
