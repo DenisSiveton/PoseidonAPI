@@ -3,6 +3,7 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -60,7 +61,7 @@ public class BidListController {
      * @return URI bidList/list. Show table with updated BidLists
      * @return In case of error : URI bidList/add. Returns to the form for a second attempt
      */
-    @PostMapping(path = "/bidList/validate")
+    @PostMapping(path = "/bidList/validate", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return bid list --> DONE
         if (!result.hasErrors()) {
@@ -101,7 +102,7 @@ public class BidListController {
      * @return URI bidList/list. Show table with updated BidLists
      * @return In case of error : URI bidList/update. Returns to the form for a second attempt
      */
-    @PostMapping("/bidList/update/{id}")
+    @PostMapping(path = "/bidList/update/{id}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Bid and return list Bid --> DONE

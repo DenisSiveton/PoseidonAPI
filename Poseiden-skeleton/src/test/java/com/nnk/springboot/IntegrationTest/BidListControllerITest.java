@@ -47,11 +47,13 @@ public class BidListControllerITest {
     @Test
     @WithMockUser(username = "j.d@hotmail.com", password = "1234", roles = "USER")
     public void homeBidList_ShouldReturnBidList() throws Exception {
+        //ACT
         MvcResult result = mvc.perform(get("/bidList/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<BidList> expectedBidList = (ArrayList) resultModelAndView.getModel().get("bidLists");
+        List<BidList> expectedBidList = (List) resultModelAndView.getModel().get("bidLists");
 
+        //ASSERT
         assertThat(resultModelAndView.getViewName().equals("bidList/list"));
         assertThat(expectedBidList.size()).isEqualTo(3);
         assertThat(expectedBidList.get(2).getType()).isEqualTo("type_2");
@@ -60,8 +62,11 @@ public class BidListControllerITest {
     @Test
     @WithMockUser(username = "j.d@hotmail.com", password = "1234", roles = "USER")
     public void bidListAdd_shouldReturnCorrectURI() throws Exception {
+        //ACT
         MvcResult result = mvc.perform(get("/bidList/add"))
                 .andReturn();
+
+        //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("bidList/add");
     }
 
@@ -71,12 +76,13 @@ public class BidListControllerITest {
         //ARRANGE
         BidList bidListToAdd = new BidList("account_test","type_test",20.0);
 
-        String bidToString = MAPPER.writeValueAsString(bidListToAdd);
-
         //ACT
             //first request that checks the redirect send the proper URI
-        mvc.perform(post("/bidList/validate").with(csrf()).content(bidToString)
-                .contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/bidList/validate").with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("account", bidListToAdd.getAccount())
+                .param("type", bidListToAdd.getType())
+                .param("bidQuantity", String.valueOf(bidListToAdd.getBidQuantity()))
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(redirectedUrl("/bidList/list"));
 
@@ -85,7 +91,7 @@ public class BidListControllerITest {
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<BidList> expectedUpdatedBidList = (ArrayList) resultModelAndView.getModel().get("bidLists");
+        List<BidList> expectedUpdatedBidList = (List) resultModelAndView.getModel().get("bidLists");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("bidList/list");
@@ -97,10 +103,10 @@ public class BidListControllerITest {
     @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
     public void bidListUpdate_ShouldReturnFormWithBidListInfoForUpdate() throws Exception {
         //ARRANGE
-        String userIdToUpdate = "1";
+        String bidListIdToUpdate = "1";
 
         //ACT
-        MvcResult result = mvc.perform(get("/bidList/update/{id}", userIdToUpdate)).andReturn();
+        MvcResult result = mvc.perform(get("/bidList/update/{id}", bidListIdToUpdate)).andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
         BidList bidListToUpdate = (BidList) resultModelAndView.getModel().get("bidList");
 
@@ -116,12 +122,15 @@ public class BidListControllerITest {
         String userIdToUpdate = "3";
         BidList bidListToAdd = new BidList("account Updated test","type Updated test",25.0);
         bidListToAdd.setId(Integer.parseInt(userIdToUpdate));
-        String bidToString = MAPPER.writeValueAsString(bidListToAdd);
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(post("/bidList/update/{id}", userIdToUpdate).with(csrf()).content(bidToString)
-                .contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/bidList/update/{id}", userIdToUpdate).with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("id", String.valueOf(bidListToAdd.getId()))
+                .param("account", bidListToAdd.getAccount())
+                .param("type", bidListToAdd.getType())
+                .param("bidQuantity", String.valueOf(bidListToAdd.getBidQuantity()))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/bidList/list"));
 
@@ -130,7 +139,7 @@ public class BidListControllerITest {
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<BidList> expectedUpdatedBidList = (ArrayList) resultModelAndView.getModel().get("bidLists");
+        List<BidList> expectedUpdatedBidList = (List) resultModelAndView.getModel().get("bidLists");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("bidList/list");
@@ -154,9 +163,8 @@ public class BidListControllerITest {
         MvcResult result = mvc.perform(get("/bidList/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        /* TODO : declarer variable en tant qu'interface et non implementation (polymorphisme)
-            "List<BidList> expectedUpdatedBidList = (ArrayList) resultModelAndView.getModel().get("bidLists");" */
-        ArrayList<BidList> expectedUpdatedBidList = (ArrayList) resultModelAndView.getModel().get("bidLists");
+        List<BidList> expectedUpdatedBidList = (List) resultModelAndView.getModel().get("bidLists");
+
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("bidList/list");
         assertThat(expectedUpdatedBidList.size()).isEqualTo(2);
@@ -174,11 +182,12 @@ public class BidListControllerITest {
             //ARRANGE
             BidList bidListToAdd = new BidList("","type_test",20.0);
 
-            String bidToString = MAPPER.writeValueAsString(bidListToAdd);
-
             //ACT
-            MvcResult result = mvc.perform(post("/bidList/validate").with(csrf()).content(bidToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/bidList/validate").with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("account", bidListToAdd.getAccount())
+                    .param("type", bidListToAdd.getType())
+                    .param("bidQuantity", String.valueOf(bidListToAdd.getBidQuantity()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
@@ -193,11 +202,11 @@ public class BidListControllerITest {
         @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
         public void bidListUpdate_ShouldEmitCorrectException_WhenWrongBidListId() throws Exception {
             //ARRANGE
-            String userIdToUpdate = "1000";
+            String bidListIdToUpdate = "1000";
 
             //ACT
-            assertThatThrownBy(() -> mvc.perform(get("/bidList/update/{id}", userIdToUpdate)))
-                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid bidList Id:" + userIdToUpdate);
+            assertThatThrownBy(() -> mvc.perform(get("/bidList/update/{id}", bidListIdToUpdate)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid bidList Id:" + bidListIdToUpdate);
 
         }
 
@@ -206,15 +215,18 @@ public class BidListControllerITest {
         @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
         public void bidListUpdate_ShouldReturnToForm_WhenWrongBidListSubmitted() throws Exception {
             //ARRANGE
-            String userIdToUpdate = "3";
+            String bidListIdToUpdate = "3";
             BidList bidListToAdd = new BidList("","type Updated test",25.0);
-            bidListToAdd.setId(Integer.parseInt(userIdToUpdate));
-            String bidToString = MAPPER.writeValueAsString(bidListToAdd);
+            bidListToAdd.setId(Integer.parseInt(bidListIdToUpdate));
 
             //ACT
             //first request that checks the request was properly redirected
-            MvcResult result = mvc.perform(post("/bidList/update/{id}", userIdToUpdate).with(csrf()).content(bidToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/bidList/update/{id}", bidListIdToUpdate).with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("id", String.valueOf(bidListToAdd.getId()))
+                    .param("account", bidListToAdd.getAccount())
+                    .param("type", bidListToAdd.getType())
+                    .param("bidQuantity", String.valueOf(bidListToAdd.getBidQuantity()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
@@ -229,11 +241,11 @@ public class BidListControllerITest {
         @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
         public void bidListDelete_ShouldEmitCorrectException_WhenWrongBidListId() throws Exception {
             //ARRANGE
-            String userIdToDelete = "1000";
+            String bidListIdToDelete = "1000";
 
             //ACT
-            assertThatThrownBy(() -> mvc.perform(get("/bidList/delete/{id}", userIdToDelete)))
-                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid bidList Id:" + userIdToDelete);
+            assertThatThrownBy(() -> mvc.perform(get("/bidList/delete/{id}", bidListIdToDelete)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid bidList Id:" + bidListIdToDelete);
 
         }
     }
