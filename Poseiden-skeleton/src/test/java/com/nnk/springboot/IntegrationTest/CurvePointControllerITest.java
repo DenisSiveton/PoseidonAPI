@@ -5,8 +5,7 @@ import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.controllers.CurveController;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -121,7 +121,7 @@ public class CurvePointControllerITest {
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(patch("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf()).content(curvePointToString)
+        mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf()).content(curvePointToString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/curvePoint/list"));
@@ -142,13 +142,13 @@ public class CurvePointControllerITest {
 
     @Test
     @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
-    public void bidListDelete_shouldReturnUpdatedListMinusDeletedBidList() throws Exception {
+    public void curvePointDelete_shouldReturnUpdatedListMinusDeletedCurvePoint() throws Exception {
         //ARRANGE
         String curvePointIdToDelete = "1";
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(delete("/curvePoint/delete/{id}", curvePointIdToDelete).with(csrf()))
+        mvc.perform(get("/curvePoint/delete/{id}", curvePointIdToDelete).with(csrf()))
                 .andExpect(redirectedUrl("/curvePoint/list"));;
 
             //second request must return updated BidList list minus deleted BidList
@@ -161,5 +161,81 @@ public class CurvePointControllerITest {
         assertThat(result.getModelAndView().getViewName()).isEqualTo("curvePoint/list");
         assertThat(expectedUpdatedCurvePointList.size()).isEqualTo(2);
         assertThat(expectedUpdatedCurvePointList.get(0).getValue()).isEqualTo(1.0);
+    }
+
+    @Nested
+    @Tag("ErrorHandlingCasesTests")
+    @DisplayName("Cover and handle borderline cases when user sends partial and wrong data")
+    class ErrorHandlingCasesTest{
+
+        @Test
+        @DisplayName("Given a CurvePoint with missing information, when added, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void curvePointValidate_ShouldReturnCorrectURI_WhenErrorInCurvePointEntry() throws Exception {
+            //ARRANGE
+            CurvePoint curvePointToAdd = new CurvePoint(null,2.0,20.0);
+
+            String curvePointToString = MAPPER.writeValueAsString(curvePointToAdd);
+
+            //ACT
+            MvcResult result = mvc.perform(post("/curvePoint/validate").with(csrf()).content(curvePointToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(resultModelAndView.getViewName()).isEqualTo("curvePoint/add");
+        }
+
+        @Test
+        @DisplayName("Given a CurvePoint Id that doesn't exist, when updated, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void curvePointUpdate_ShouldEmitCorrectException_WhenWrongCurvePointId() throws Exception {
+            //ARRANGE
+            String curvePointIdToUpdate = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/curvePoint/update/{id}", curvePointIdToUpdate)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid curvePoint Id:" + curvePointIdToUpdate);
+
+        }
+
+        @Test
+        @DisplayName("Given a CurvePoint with missing information, when updated, then user should be redirected to previous Form")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void curvePointUpdate_ShouldReturnToForm_WhenWrongCurvePointSubmitted() throws Exception {
+            //ARRANGE
+            String curvePointIdToUpdate = "3";
+            CurvePoint curvePointToAdd = new CurvePoint(null,2.0,20.0);
+            curvePointToAdd.setId(Integer.parseInt(curvePointIdToUpdate));
+            String curvePointToString = MAPPER.writeValueAsString(curvePointToAdd);
+
+            //ACT
+            //first request that checks the request was properly redirected
+            MvcResult result = mvc.perform(post("/curvePoint/update/{id}", curvePointIdToUpdate).with(csrf()).content(curvePointToString)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andReturn();
+
+            ModelAndView resultModelAndView = result.getModelAndView();
+
+            //ASSERT
+            assertThat(result.getModelAndView().getViewName()).isEqualTo("curvePoint/update");
+        }
+
+        @Test
+        @DisplayName("Given a CurvePoint Id that doesn't exist, when deleted, then Exception should be emitted with correct message")
+        @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
+        public void curvePointDelete_ShouldEmitCorrectException_WhenWrongCurvePointId() throws Exception {
+            //ARRANGE
+            String curvePointIdToDelete = "1000";
+
+            //ACT
+            assertThatThrownBy(() -> mvc.perform(get("/curvePoint/delete/{id}", curvePointIdToDelete)))
+                    .hasCauseInstanceOf(IllegalArgumentException.class).hasMessageContaining("Invalid curvePoint Id:" + curvePointIdToDelete);
+
+        }
     }
 }

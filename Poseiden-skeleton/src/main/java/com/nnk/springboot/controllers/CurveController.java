@@ -103,11 +103,12 @@ public class CurveController {
      * @return URI curvePoint/list. Show table with updated CurvePoints
      * @return In case of error : URI curvePoint/update. Returns to the form for a second attempt
      */
-    @PatchMapping("/curvePoint/update/{id}")
+    @PostMapping("/curvePoint/update/{id}")
     public String updateCurvePoint(@PathVariable("id") Integer id, @Valid @RequestBody CurvePoint curvePoint,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Curve and return Curve list
         if (result.hasErrors()) {
+            model.addAttribute("curvePoint", curvePoint);
             return "curvePoint/update";
         }
         curvePointRepository.save(curvePoint);
@@ -123,7 +124,7 @@ public class CurveController {
      * @param model Web UI container. Contains all the remaining CurvePoints
      * @return URI curvePoint/list. Show table with updated CurvePoints
      */
-    @DeleteMapping("/curvePoint/delete/{id}")
+    @GetMapping("/curvePoint/delete/{id}")
     public String deleteCurvePoint(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Curve by Id and delete the Curve, return to Curve list
         CurvePoint curvePoint = curvePointRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid curvePoint Id:" + id));
