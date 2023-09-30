@@ -62,7 +62,7 @@ public class TradeController {
      * @return In case of error : URI trade/add. Returns to the form for a second attempt
      */
     @PostMapping("/trade/validate")
-    public String validate(@Valid @RequestBody Trade trade, BindingResult result, Model model) {
+    public String validate(@Valid Trade trade, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Trade list --> DONE
         if (!result.hasErrors()) {
             tradeRepository.save(trade);
@@ -103,7 +103,7 @@ public class TradeController {
      * @return In case of error : URI trade/update. Returns to the form for a second attempt
      */
     @PostMapping("/trade/update/{id}")
-    public String updateTrade(@PathVariable("id") Integer id, @Valid @RequestBody Trade trade,
+    public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Trade and return Trade list --> DONE
         if (result.hasErrors()) {
