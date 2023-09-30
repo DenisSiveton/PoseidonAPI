@@ -1,13 +1,15 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 
@@ -63,7 +65,7 @@ public class RatingController {
      * @return In case of error : URI rating/add. Returns to the form for a second attempt
      */
     @PostMapping("/rating/validate")
-    public String validate(@Valid @RequestBody Rating rating, BindingResult result, Model model) {
+    public String validate(@Valid Rating rating, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Rating list --> DONE
         if (!result.hasErrors()) {
             ratingRepository.save(rating);
@@ -104,7 +106,7 @@ public class RatingController {
      * @return In case of error : URI rating/update. Returns to the form for a second attempt
      */
     @PostMapping("/rating/update/{id}")
-    public String updateRating(@PathVariable("id") Integer id, @Valid @RequestBody Rating rating,
+    public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Rating and return Rating list --> DONE
         if (result.hasErrors()) {

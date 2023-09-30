@@ -1,10 +1,6 @@
 package com.nnk.springboot.IntegrationTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.controllers.RatingController;
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +14,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 
@@ -39,8 +36,6 @@ public class RatingControllerITest {
     @Autowired
     private RatingController ratingController;
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     @BeforeEach
     public void setup_data(){
 
@@ -52,9 +47,10 @@ public class RatingControllerITest {
         MvcResult result = mvc.perform(get("/rating/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<Rating> expectedRating = (ArrayList) resultModelAndView.getModel().get("ratings");
+        assertThat(resultModelAndView).isNotNull();
+        List<Rating> expectedRating = (List) resultModelAndView.getModel().get("ratings");
 
-        assertThat(resultModelAndView.getViewName().equals("rating/list"));
+        assertThat(resultModelAndView.getViewName()).isEqualTo("rating/list");
         assertThat(expectedRating.size()).isEqualTo(3);
         assertThat(expectedRating.get(2).getOrderNumber()).isEqualTo(3);
     }
@@ -62,9 +58,15 @@ public class RatingControllerITest {
     @Test
     @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
     public void ratingAdd_shouldReturnCorrectURI() throws Exception {
+        //ACT
         MvcResult result = mvc.perform(get("/rating/add"))
                 .andReturn();
-        assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/add");
+
+        ModelAndView resultModelAndView = result.getModelAndView();
+
+        //ASSERT
+        assertThat(resultModelAndView).isNotNull();
+        assertThat(resultModelAndView.getViewName()).isEqualTo("rating/add");
     }
 
     @Test
@@ -73,12 +75,14 @@ public class RatingControllerITest {
         //ARRANGE
         Rating ratingToAdd = new Rating("moodys 4", "sAndPRating 4", "fitch 4",4);
 
-        String ratingToString = MAPPER.writeValueAsString(ratingToAdd);
-
         //ACT
             //first request that checks the redirect send the proper URI
-        mvc.perform(post("/rating/validate").with(csrf()).content(ratingToString)
-                .contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/rating/validate").with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("moodysRating", ratingToAdd.getMoodysRating())
+                .param("sandPRating", ratingToAdd.getSandPRating())
+                .param("fitchRating", ratingToAdd.getFitchRating())
+                .param("orderNumber", String.valueOf(ratingToAdd.getOrderNumber()))
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(redirectedUrl("/rating/list"));
 
@@ -87,7 +91,8 @@ public class RatingControllerITest {
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<Rating> expectedUpdatedRatingList = (ArrayList) resultModelAndView.getModel().get("ratings");
+        assertThat(resultModelAndView).isNotNull();
+        List<Rating> expectedUpdatedRatingList = (List) resultModelAndView.getModel().get("ratings");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/list");
@@ -104,6 +109,7 @@ public class RatingControllerITest {
         //ACT
         MvcResult result = mvc.perform(get("/rating/update/{id}", ratingIdToDelete)).andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
+        assertThat(resultModelAndView).isNotNull();
         Rating ratingToUpdate = (Rating) resultModelAndView.getModel().get("rating");
 
         //ASSERT
@@ -118,12 +124,16 @@ public class RatingControllerITest {
         String ratingIdToUpdate = "3";
         Rating ratingToUpdate = new Rating("moodys updated", "sAndPRating updated", "fitch updated",30);
         ratingToUpdate.setId(Integer.parseInt(ratingIdToUpdate));
-        String bidToString = MAPPER.writeValueAsString(ratingToUpdate);
 
         //ACT
             //first request that checks the request was properly redirected
-        mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf()).content(bidToString)
-                .contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("id", String.valueOf(ratingToUpdate.getId()))
+                .param("moodysRating", ratingToUpdate.getMoodysRating())
+                .param("sandPRating", ratingToUpdate.getSandPRating())
+                .param("fitchRating", ratingToUpdate.getFitchRating())
+                .param("orderNumber", String.valueOf(ratingToUpdate.getOrderNumber()))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrl("/rating/list"));
 
@@ -132,7 +142,8 @@ public class RatingControllerITest {
                 .andReturn();
 
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<Rating> expectedUpdatedRatingList = (ArrayList) resultModelAndView.getModel().get("ratings");
+        assertThat(resultModelAndView).isNotNull();
+        List<Rating> expectedUpdatedRatingList = (List<Rating>) resultModelAndView.getModel().get("ratings");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/list");
@@ -150,13 +161,14 @@ public class RatingControllerITest {
         //ACT
             //first request that checks the request was properly redirected
         mvc.perform(get("/rating/delete/{id}", ratingIdToDelete).with(csrf()))
-                .andExpect(redirectedUrl("/rating/list"));;
+                .andExpect(redirectedUrl("/rating/list"));
 
             //second request must return updated Rating list minus deleted Rating
         MvcResult result = mvc.perform(get("/rating/list"))
                 .andReturn();
         ModelAndView resultModelAndView = result.getModelAndView();
-        ArrayList<Rating> expectedUpdatedRatingList = (ArrayList) resultModelAndView.getModel().get("ratings");
+        assertThat(resultModelAndView).isNotNull();
+        List<Rating> expectedUpdatedRatingList = (List) resultModelAndView.getModel().get("ratings");
 
         //ASSERT
         assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/list");
@@ -176,24 +188,27 @@ public class RatingControllerITest {
             //ARRANGE
             Rating ratingToAdd = new Rating("moodys 4", "sAndPRating 4", "fitch 4",null);
 
-            String ratingToString = MAPPER.writeValueAsString(ratingToAdd);
-
             //ACT
-            MvcResult result = mvc.perform(post("/rating/validate").with(csrf()).content(ratingToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/rating/validate").with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("moodysRating", ratingToAdd.getMoodysRating())
+                    .param("sandPRating", ratingToAdd.getSandPRating())
+                    .param("fitchRating", ratingToAdd.getFitchRating())
+                    .param("orderNumber", String.valueOf(ratingToAdd.getOrderNumber()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
             ModelAndView resultModelAndView = result.getModelAndView();
 
             //ASSERT
+            assertThat(resultModelAndView).isNotNull();
             assertThat(resultModelAndView.getViewName()).isEqualTo("rating/add");
         }
 
         @Test
         @DisplayName("Given a Rating Id that doesn't exist, when updated, then Exception should be emitted with correct message")
         @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
-        public void ratingUpdate_ShouldEmitCorrectException_WhenWrongRatingId() throws Exception {
+        public void ratingUpdate_ShouldEmitCorrectException_WhenWrongRatingId(){
             //ARRANGE
             String ratingIdToUpdate = "1000";
 
@@ -209,26 +224,32 @@ public class RatingControllerITest {
         public void ratingUpdate_ShouldReturnToForm_WhenWrongRatingSubmitted() throws Exception {
             //ARRANGE
             String ratingIdToUpdate = "3";
-            Rating ratingToAdd = new Rating("moodys 4", "sAndPRating 4", "fitch 4",null);
-            ratingToAdd.setId(Integer.parseInt(ratingIdToUpdate));
-            String ratingToString = MAPPER.writeValueAsString(ratingToAdd);
+            Rating ratingToUpdate = new Rating("moodys 4", "sAndPRating 4", "fitch 4",null);
+            ratingToUpdate.setId(Integer.parseInt(ratingIdToUpdate));
 
             //ACT
-            MvcResult result = mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf()).content(ratingToString)
-                    .contentType(MediaType.APPLICATION_JSON)
+            MvcResult result = mvc.perform(post("/rating/update/{id}", ratingIdToUpdate).with(csrf())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("id", String.valueOf(ratingToUpdate.getId()))
+                    .param("moodysRating", ratingToUpdate.getMoodysRating())
+                    .param("sandPRating", ratingToUpdate.getSandPRating())
+                    .param("fitchRating", ratingToUpdate.getFitchRating())
+                    .param("orderNumber", String.valueOf(ratingToUpdate.getOrderNumber()))
                     .accept(MediaType.APPLICATION_JSON))
                     .andReturn();
 
             ModelAndView resultModelAndView = result.getModelAndView();
 
+
             //ASSERT
-            assertThat(result.getModelAndView().getViewName()).isEqualTo("rating/update");
+            assertThat(resultModelAndView).isNotNull();
+            assertThat(resultModelAndView.getViewName()).isEqualTo("rating/update");
         }
 
         @Test
         @DisplayName("Given a Rating Id that doesn't exist, when deleted, then Exception should be emitted with correct message")
         @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
-        public void ratingDelete_ShouldEmitCorrectException_WhenWrongRatingId() throws Exception {
+        public void ratingDelete_ShouldEmitCorrectException_WhenWrongRatingId(){
             //ARRANGE
             String ratingIdToDelete = "1000";
 
