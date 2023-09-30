@@ -62,7 +62,7 @@ public class RuleNameController {
      * @return In case of error : URI ruleName/add. Returns to the form for a second attempt
      */
     @PostMapping("/ruleName/validate")
-    public String validate(@Valid @RequestBody RuleName ruleName, BindingResult result, Model model) {
+    public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return RuleName list --> DONE
         if (!result.hasErrors()) {
             ruleNameRepository.save(ruleName);
@@ -103,7 +103,7 @@ public class RuleNameController {
      * @return In case of error : URI ruleName/update. Returns to the form for a second attempt
      */
     @PostMapping("/ruleName/update/{id}")
-    public String updateRuleName(@PathVariable("id") Integer id, @Valid @RequestBody RuleName ruleName,
+    public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list --> DONE
         if (result.hasErrors()) {

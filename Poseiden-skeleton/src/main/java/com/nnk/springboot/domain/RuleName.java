@@ -36,8 +36,8 @@ public class RuleName {
     public RuleName() {
     }
 
-    public RuleName(String rule_name, String description, String template) {
-        this.name = rule_name;
+    public RuleName(String name, String description, String template) {
+        this.name = name;
         this.description = description;
         this.template = template;
     }
