@@ -60,7 +60,7 @@ public class UserController {
      * @return In case of error : URI user/add. Returns to the form for a second attempt
      */
     @PostMapping("/user/validate")
-    public String validate(@Valid @RequestBody User user, BindingResult result, Model model) {
+    public String validate(@Valid User user, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(user.getPassword()));
@@ -101,8 +101,8 @@ public class UserController {
      * @return URI user/list. Show table with updated Users
      * @return In case of error : URI user/update. Returns to the form for a second attempt
      */
-    @PatchMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid @RequestBody User user,
+    @PostMapping("/user/update/{id}")
+    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "user/update";
@@ -124,7 +124,7 @@ public class UserController {
      * @param model Web UI container. Contains all the remaining Users
      * @return URI user/list. Show table with updated Users
      */
-    @DeleteMapping("/user/delete/{id}")
+    @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         userRepository.delete(user);

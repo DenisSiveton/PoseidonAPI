@@ -18,4 +18,6 @@ insert into trade(Id, account, type, buy_quantity) VALUES (1, 'acc_1', 'type_1',
 insert into trade(Id, account, type, buy_quantity) VALUES (2, 'acc_2', 'type_2', 12.0);
 insert into trade(Id, account, type, buy_quantity) VALUES (3, 'acc_1', 'type_2', 80.2);
 
-insert into Users(fullname, username, password, role) VALUES ('User Test', 'Usertest', '$2a$10$3.GD7d4o4pNREE2HdbY52O5VINdNLOSe1W7LT4txvo7NxPElYcVEO', 'USER');
+insert into Users(Id, fullname, username, password, role) VALUES (1, 'User Test 1', 'userTest1', '$2a$10$3.GD7d4o4pNREE2HdbY52O5VINdNLOSe1W7LT4txvo7NxPElYcVEO', 'USER');
+insert into Users(Id, fullname, username, password, role) VALUES (2, 'User Test 2', 'userTest2', '$2a$10$3.GD7d4o4pNREE2HdbY52O5VINdNLOSe1W7LT4txvo7NxPElYcVEO', 'USER');
+insert into Users(Id, fullname, username, password, role) VALUES (3, 'Admin Test', 'adminTest', '$2a$10$3.GD7d4o4pNREE2HdbY52O5VINdNLOSe1W7LT4txvo7NxPElYcVEO', 'ADMIN');
