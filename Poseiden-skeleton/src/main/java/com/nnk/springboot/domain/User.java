@@ -29,6 +29,19 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    public User() {
+    }
+
+    public User(@NotBlank(message = "Username is mandatory") String username,
+                @NotBlank(message = "Password is mandatory") @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") String password,
+                @NotBlank(message = "FullName is mandatory") String fullname,
+                @NotBlank(message = "Role is mandatory") String role) {
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.role = role;
+    }
+
     public Integer getId() {
         return id;
     }
