@@ -25,15 +25,21 @@ public class HomeController
 		return "redirect:/bidList/list";
 	}
 
+	@RequestMapping("/user/home")
+	public String userHome(Model model)
+	{
+		return "redirect:/bidList/list";
+	}
+
 	@RequestMapping("/default")
 	public String defaultAfterLogin() {
 		Collection<? extends GrantedAuthority> authorities;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		authorities = auth.getAuthorities();
 		String myRole = authorities.toArray()[0].toString();
-		if (myRole.equals("ADMIN")) {
+		if (myRole.contains("ADMIN")) {
 			return "redirect:/admin/home";
 		}
-		return "redirect:/bidList/list";
+		return "redirect:/user/home";
 	}
 }
