@@ -1,4 +1,4 @@
-package com.nnk.springboot.IntegrationTest;
+package com.nnk.springboot.integration_test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nnk.springboot.controllers.BidListController;
@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -84,7 +84,8 @@ public class BidListControllerITest {
                 .param("type", bidListToAdd.getType())
                 .param("bidQuantity", String.valueOf(bidListToAdd.getBidQuantity()))
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(redirectedUrl("/bidList/list"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/bidList/list"));
 
             //second request must return updated bidList list plus added BidList
         MvcResult result = mvc.perform(get("/bidList/list"))

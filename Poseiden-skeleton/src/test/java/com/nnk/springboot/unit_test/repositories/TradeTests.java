@@ -1,6 +1,5 @@
-package com.nnk.springboot.UnitTest;
+package com.nnk.springboot.unit_test.repositories;
 
-import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;

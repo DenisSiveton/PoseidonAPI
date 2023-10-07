@@ -1,4 +1,4 @@
-package com.nnk.springboot.IntegrationTest;
+package com.nnk.springboot.integration_test;
 
 import com.nnk.springboot.controllers.UserController;
 import com.nnk.springboot.domain.User;
