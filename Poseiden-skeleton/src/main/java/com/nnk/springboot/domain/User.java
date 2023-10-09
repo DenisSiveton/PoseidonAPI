@@ -3,6 +3,7 @@ package com.nnk.springboot.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "Users")
@@ -12,22 +13,39 @@ public class User {
     @Column(name = "Id")
     private Integer id;
 
-    @NotBlank(message = "Username is mandatory")
+    @NotBlank(message = "The Username is mandatory")
     @Column(name = "username")
     private String username;
 
-    @NotBlank(message = "Password is mandatory")
-    @Pattern(regexp ="^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
+    @Pattern(regexp ="^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "The password must contain at least :\n" +
+            "-One capital among A to Z\n" +
+            "-One digit among 0 to 9\n" +
+            "-One special character among the following #?!@$%^&*\"")
+    @Size(min = 8, message = "The password must be at least be 8 characters long" )
+    @NotBlank(message = "The Password is mandatory")
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "FullName is mandatory")
+    @NotBlank(message = "The Full Name is mandatory")
     @Column(name = "fullname")
     private String fullname;
 
-    @NotBlank(message = "Role is mandatory")
+    @NotBlank(message = "The Role is mandatory")
     @Column(name = "role")
     private String role;
+
+    public User() {
+    }
+
+    public User(@NotBlank(message = "Username is mandatory") String username,
+                @NotBlank(message = "Password is mandatory") @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") String password,
+                @NotBlank(message = "FullName is mandatory") String fullname,
+                @NotBlank(message = "Role is mandatory") String role) {
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.role = role;
+    }
 
     public Integer getId() {
         return id;

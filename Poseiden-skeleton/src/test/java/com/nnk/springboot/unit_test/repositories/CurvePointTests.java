@@ -1,4 +1,4 @@
-package com.nnk.springboot.UnitTest;
+package com.nnk.springboot.unit_test.repositories;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
@@ -42,20 +42,13 @@ public class CurvePointTests {
 	@Test
 	@DisplayName("Test that gets a list of CurvePoint")
 	public void givenBidListList_whenFindAll_thenReturnBidList(){
-		// ARRANGE
-		CurvePoint curvePointOne = new CurvePoint(10, 15d, 30d);
-		CurvePoint curvePointTwo = new CurvePoint(15, 16d, 40d);
-
-		curvePointRepository.save(curvePointOne);
-		curvePointRepository.save(curvePointTwo);
-
 		// ACT
 		List<CurvePoint> curvePointList = curvePointRepository.findAll();
 
 		// ASSERT
 		assertThat(curvePointList).isNotEmpty();
-		assertThat(curvePointList.size()).isEqualTo(2);
-		assertThat(curvePointList.get(1).getCurveId()).isEqualTo(15);
+		assertThat(curvePointList.size()).isEqualTo(3);
+		assertThat(curvePointList.get(1).getCurveId()).isEqualTo(5);
 	}
 
 	@Test

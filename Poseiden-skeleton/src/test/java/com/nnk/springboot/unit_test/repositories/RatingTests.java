@@ -1,4 +1,4 @@
-package com.nnk.springboot.UnitTest;
+package com.nnk.springboot.unit_test.repositories;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
@@ -28,8 +28,8 @@ public class RatingTests {
 	}
 
 	@Test
-	@DisplayName("Test that saves a curvePoint")
-	public void givenBidListObject_whenSave_thenReturnSavedBidList() {
+	@DisplayName("Test that saves a Rating")
+	public void givenRatingObject_whenSave_thenReturnSavedRating() {
 		// ACT
 		Rating savedRating = ratingRepository.save(ratingTest);
 
@@ -41,27 +41,20 @@ public class RatingTests {
 	}
 
 	@Test
-	@DisplayName("Test that gets a list of CurvePoint")
-	public void givenBidListList_whenFindAll_thenReturnBidList(){
-		// ARRANGE
-		Rating ratingOne = new Rating("m_rating Test1", "s_rating Test1", "f_rating Test1", 1);
-		Rating ratingTwo = new Rating("m_rating Test2", "s_rating Test2", "f_rating Test2", 2);
-
-		ratingRepository.save(ratingOne);
-		ratingRepository.save(ratingTwo);
-
+	@DisplayName("Test that gets a list of Rating")
+	public void givenRatingList_whenFindAll_thenReturnRatingList(){
 		// ACT
 		List<Rating> ratingList = ratingRepository.findAll();
 
 		// ASSERT
 		assertThat(ratingList).isNotEmpty();
-		assertThat(ratingList.size()).isEqualTo(2);
-		assertThat(ratingList.get(1).getMoodysRating()).isEqualTo("m_rating Test2");
+		assertThat(ratingList.size()).isEqualTo(3);
+		assertThat(ratingList.get(1).getMoodysRating()).isEqualTo("moodys 2");
 	}
 
 	@Test
-	@DisplayName("Test to get CurvePoint by Id")
-	public void givenBidListObject_whenFindById_thenReturnBidListObject() {
+	@DisplayName("Test to get Rating by Id")
+	public void givenRatingObject_whenFindById_thenReturnRatingObject() {
 		// ARRANGE
 		ratingRepository.save(ratingTest);
 
@@ -74,8 +67,8 @@ public class RatingTests {
 	}
 
 	@Test
-	@DisplayName("Test : get CurvePoint update operation")
-	public void givenEmployeeObject_whenUpdate_thenEmployeeObject() {
+	@DisplayName("Test : get Rating update operation")
+	public void givenRatingObject_whenUpdate_thenRatingObject() {
 		// ARRANGE
 		ratingRepository.save(ratingTest);
 
@@ -94,8 +87,8 @@ public class RatingTests {
 	}
 
 	@Test
-	@DisplayName("Test : delete CurvePoint operation")
-	public void givenEmployeeObject_whenDelete_thenRemoveEmployee() {
+	@DisplayName("Test : delete Rating operation")
+	public void givenRatingObject_whenDelete_thenRemoveRating() {
 		// ARRANGE
 		Integer id = ratingRepository.save(ratingTest).getId();
 

@@ -1,6 +1,5 @@
-package com.nnk.springboot.UnitTest;
+package com.nnk.springboot.unit_test.repositories;
 
-import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,20 +43,13 @@ public class TradeTests {
 	@Test
 	@DisplayName("Test that gets a list of Trade")
 	public void givenBidListList_whenFindAll_thenReturnBidList(){
-		// ARRANGE
-		Trade tradeOne = new Trade("account 1 Test", "type 1 Test", 34.0);
-		Trade tradeTwo = new Trade("account 2 Test", "type 2 Test", 35.0);
-
-		tradeRepository.save(tradeOne);
-		tradeRepository.save(tradeTwo);
-
 		// ACT
 		List<Trade> tradeList = tradeRepository.findAll();
 
 		// ASSERT
 		assertThat(tradeList).isNotEmpty();
-		assertThat(tradeList.size()).isEqualTo(2);
-		assertThat(tradeList.get(1).getBuyQuantity()).isEqualTo(35.0);
+		assertThat(tradeList.size()).isEqualTo(3);
+		assertThat(tradeList.get(1).getBuyQuantity()).isEqualTo(12.0);
 	}
 
 	@Test

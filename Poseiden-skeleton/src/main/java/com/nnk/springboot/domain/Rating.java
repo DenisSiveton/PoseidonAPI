@@ -15,21 +15,22 @@ public class Rating {
     @Column (name = "Id")
     private int id;
 
-    @Column(name = "moodysRating")
+    @Column(name = "moodys_rating")
     private String moodysRating;
 
     @Column(name = "sandPRating")
     private String sandPRating;
 
-    @Column(name = "fitchRating")
+    @Column(name = "fitch_rating")
     private String fitchRating;
 
-    @Column(name = "orderNumber")
-    private int orderNumber;
+    @Column(name = "order_number")
+    @NotNull(message = "The Order Number must not be null")
+    private Integer orderNumber;
 
     public Rating(){};
 
-    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int orderNumber) {
+    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, Integer orderNumber) {
         this.moodysRating = moodys_rating;
         this.sandPRating = sand_pRating;
         this.fitchRating = fitch_rating;
@@ -68,11 +69,11 @@ public class Rating {
         this.fitchRating = fitchRating;
     }
 
-    public int getOrderNumber() {
+    public Integer getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(int orderNumber) {
+    public void setOrderNumber(Integer orderNumber) {
         this.orderNumber = orderNumber;
     }
 }

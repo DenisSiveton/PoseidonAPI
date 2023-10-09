@@ -1,4 +1,4 @@
-package com.nnk.springboot.UnitTest;
+package com.nnk.springboot.unit_test.repositories;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.repositories.RuleNameRepository;
@@ -24,12 +24,12 @@ public class RuleNameTests {
 	@BeforeEach
 	public void setupTestData(){
 		// ARRANGE
-		ruleNameTest = new RuleName("name Test", "description Test", "json Test", "template Test", "sql Test", "sql_part Test");
+		ruleNameTest = new RuleName("name Test", "description Test", "template Test");
 	}
 
 	@Test
 	@DisplayName("Test that saves a RuleName")
-	public void givenBidListObject_whenSave_thenReturnSavedBidList() {
+	public void givenRuleNameObject_whenSave_thenReturnSavedRuleName() {
 		// ACT
 		RuleName savedRuleName = ruleNameRepository.save(ruleNameTest);
 
@@ -42,26 +42,19 @@ public class RuleNameTests {
 
 	@Test
 	@DisplayName("Test that gets a list of RuleName")
-	public void givenBidListList_whenFindAll_thenReturnBidList(){
-		// ARRANGE
-		RuleName ruleNameOne = new RuleName("name 1 Test", "description 1 Test", "json 1 Test", "template 1 Test", "sql 1 Test", "sql_part 1 Test");
-		RuleName ruleNameTwo = new RuleName("name 2 Test", "description 2 Test", "json 2 Test", "template 2 Test", "sql 2 Test", "sql_part 2 Test");
-
-		ruleNameRepository.save(ruleNameOne);
-		ruleNameRepository.save(ruleNameTwo);
-
+	public void givenRuleNameList_whenFindAll_thenReturnRuleNameList(){
 		// ACT
 		List<RuleName> ruleNameList = ruleNameRepository.findAll();
 
 		// ASSERT
 		assertThat(ruleNameList).isNotEmpty();
-		assertThat(ruleNameList.size()).isEqualTo(2);
-		assertThat(ruleNameList.get(1).getSqlPart()).isEqualTo("sql_part 2 Test");
+		assertThat(ruleNameList.size()).isEqualTo(3);
+		assertThat(ruleNameList.get(1).getDescription()).isEqualTo("description 2");
 	}
 
 	@Test
 	@DisplayName("Test to get RuleName by Id")
-	public void givenBidListObject_whenFindById_thenReturnBidListObject() {
+	public void givenRuleNameObject_whenFindById_thenReturnRuleNameObject() {
 		// ARRANGE
 		ruleNameRepository.save(ruleNameTest);
 
@@ -75,7 +68,7 @@ public class RuleNameTests {
 
 	@Test
 	@DisplayName("Test : get RuleName update operation")
-	public void givenEmployeeObject_whenUpdate_thenEmployeeObject() {
+	public void givenRuleNameObject_whenUpdate_thenRuleNameObject() {
 		// ARRANGE
 		ruleNameRepository.save(ruleNameTest);
 
@@ -95,7 +88,7 @@ public class RuleNameTests {
 
 	@Test
 	@DisplayName("Test : delete RuleName operation")
-	public void givenEmployeeObject_whenDelete_thenRemoveEmployee() {
+	public void givenRuleNameObject_whenDelete_thenRemoveRuleName() {
 		// ARRANGE
 		Integer id = ruleNameRepository.save(ruleNameTest).getId();
 

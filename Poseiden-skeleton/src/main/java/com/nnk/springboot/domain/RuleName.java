@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "RuleName")
+@Table(name = "rule_name")
 public class RuleName {
     // TODO: Map columns in data table RULENAME with corresponding java fields
 
@@ -15,6 +15,7 @@ public class RuleName {
     private int id;
 
     @Column(name = "name")
+    @NotBlank(message = "The Name is mandatory")
     private String name;
 
     @Column(name = "description")
@@ -26,22 +27,19 @@ public class RuleName {
     @Column(name = "template")
     private String template;
 
-    @Column(name = "sqlStr")
+    @Column(name = "sql_str")
     private String sqlStr;
 
-    @Column(name = "sqlPart")
+    @Column(name = "sql_part")
     private String sqlPart;
 
     public RuleName() {
     }
 
-    public RuleName(String rule_name, String description, String json, String template, String sql, String sql_part) {
-        this.name = rule_name;
+    public RuleName(String name, String description, String template) {
+        this.name = name;
         this.description = description;
-        this.json = json;
         this.template = template;
-        this.sqlStr = sql;
-        this.sqlPart = sql_part;
     }
 
     public int getId() {
