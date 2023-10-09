@@ -16,10 +16,11 @@ public class Trade {
     private int id;
 
     @Column(name = "account")
-    @NotBlank(message = "Account is mandatory")
+    @NotBlank(message = "The Account is mandatory")
     private String account;
 
     @Column(name = "type")
+    @NotBlank(message = "The Type is mandatory")
     private String type;
 
     @Column(name = "buyQuantity")

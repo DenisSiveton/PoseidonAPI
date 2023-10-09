@@ -22,7 +22,9 @@
 				<label for="account" class="col-sm-2 control-label">Account</label>
 				<div class="col-sm-10">
 					<input type="text" th:field="*{account}" id="account" placeholder="Account" class="col-4">
-					<p class="text-danger" th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></p>
+					<div style="color: red;">
+						<p class="text-danger" th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></p>
+					</div>
 				</div>
 			</div>
 
@@ -30,7 +32,9 @@
 				<label for="type" class="col-sm-2 control-label">Type</label>
 				<div class="col-sm-10">
 					<input type="text" th:field="*{type}" id="type" placeholder="Type" class="col-4">
-					<p class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></p>
+					<div style="color: red;">
+						<p class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></p>
+					</div>
 				</div>
 			</div>
 

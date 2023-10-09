@@ -14,7 +14,7 @@ public class CurvePoint {
     private int id;
 
     @Column (name = "curve_id")
-    @NotNull(message = "Must not be null")
+    @NotNull(message = "The Curve Id must not be null")
     private Integer curveId;
 
     @Column (name = "as_Of_date")

@@ -62,6 +62,24 @@ public class LoginControllerITest {
     }
 
     @Test
+    public void loginFailed_ShouldReturnLoginPageWithError() throws Exception {
+        //ARRANGE
+        String expectedErrorMessage ="The credentials did not match any registered user in the database.";
+        // ACT
+        MvcResult result = mvc.perform(get("/login-error"))
+                .andReturn();
+
+        ModelAndView resultModelAndView = result.getModelAndView();
+
+        //ASSERT
+        assertThat(resultModelAndView).isNotNull();
+        assertThat(resultModelAndView.getViewName()).isEqualTo("login");
+        String errorMessage = (String) resultModelAndView.getModel().get("errorMessage");
+        assertThat(errorMessage).isEqualTo(expectedErrorMessage);
+
+    }
+
+    @Test
     @WithMockUser(username = "Usertest", password = "userMDP", roles = "USER")
     public void loginSecureArticleDetails_shouldReturnCorrectPageWithUserList() throws Exception {
         //ACT

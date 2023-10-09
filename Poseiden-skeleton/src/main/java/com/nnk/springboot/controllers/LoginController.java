@@ -19,7 +19,7 @@ public class LoginController {
     private UserRepository userRepository;
 
     /**
-     * This method This method sends the user to the Application login page..
+     * This method sends the user to the Application login page.
      *
      * @return Web UI container with its view set to "login".
      */
@@ -28,6 +28,20 @@ public class LoginController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("login");
         return mav;
+    }
+
+    /**
+     * This method redirects the user to the Application login page after a failed attempt.
+     * An error message will explain what happened.
+     *
+     * @param model Web UI container. Contains the error message when the login fails.
+     * @return URI login. Show login page with the error message
+     */
+    @GetMapping("/login-error")
+    public String failLogin(Model model){
+        String errorMessage = "The credentials did not match any registered user in the database.";
+        model.addAttribute("errorMessage", errorMessage);
+        return "login";
     }
 
     /**
