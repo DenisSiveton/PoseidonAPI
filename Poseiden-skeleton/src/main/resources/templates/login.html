@@ -15,6 +15,10 @@
         <div th:style ="'background : linear-gradient(to right, #0B1C3C, #67C3FF); height:40px'" class="mx-auto flex justify-center items-center rounded-md w-60">
             <h1  class=" text-center font-normal text-xl text-white rounded-t-2xl py-auto">Poseidon Capital Solutions</h1>
         </div>
+        <div th:if="${errorMessage}" style="color: red;" class="rounded-md mt-10 mr-10 ml-10 border bg-red-100 h-15 text-align-center">
+            <p class="text-danger text-center" th:if="${errorMessage}" th:text="${errorMessage}">Error Message</p>
+        </div>
+
         <form th:action="@{/login}" method="post" class="border-teal p-4 mb-6">
                 <div class="input-group my-5 flex">
                     <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
