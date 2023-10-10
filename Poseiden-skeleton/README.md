@@ -53,7 +53,7 @@ A database named "demo" should now be created with all the tables needed.
 Three users are already created for example purposes.
 
 ### Import the code into your IDE
-Finally, you need to import the code into an IDE of your choice and run the App.java to launch the application.
+Finally, you need to import the code into an IDE of your choice and run the Application.java to launch the application.
 
 ### Change database user credentials
 If you add another user or modify the current one make sure to change the same in the code.
