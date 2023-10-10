@@ -3,8 +3,8 @@
 This application is Poseidon Capital Resources.
 It serves as an entity handling tool.
 
-##Description of the Application
-###What does this Application do?
+## Description of the Application
+### What does this Application do?
 This application was created by Poseidon Inc. to handle financial entities (bids, trades, ratings, etc...).
 It respects the MVC approach as it has controller layers for all entities as well repository layers to handle data persistence.
 Indeed, it uses the CRUD methods to handle the entities.
@@ -19,14 +19,14 @@ We intend to develop several features to improve and expend the use of this Appl
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 See deployment for notes on how to deploy the project on a live system.
 
-##Prerequisites
+## Prerequisites
 What software you need to use the app and how to install them:
 
 - Java 11
 - Maven 3.11.0
 - Mysql 8.0.34
 
-###Installing
+### Installing
 A step by step series of examples that tell you how to get a development environment running:
 
 #### 1 > Install Java:
@@ -42,7 +42,7 @@ After downloading the mysql 8.0.34 installer and installing it, you will be aske
 
 This code uses the default <b>root</b> account to connect, and the password can be set as <b>rootroot</b>.
 
-##Running App
+## Running App
 
 ### Creating the Database and Data
 Post installation of MySQL, Java and Maven, you will have to set up the tables and data in the data base.
@@ -62,7 +62,7 @@ Code to change if user's credentials are updated or if a new user is created:
 - username to change : spring.datasource.username=your_username
 - passsword to change : spring.datasource.password=your_password
 
-##Using the App
+## Using the App
 To create you own user go to the home page (example : if you're using localhost it is http://localhost:8080/).
 Then go to user management and click on <b>Add New</b>.
 You will then be able to login with your own credentials.
