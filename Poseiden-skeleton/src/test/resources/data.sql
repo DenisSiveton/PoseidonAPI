@@ -1,6 +1,6 @@
-insert into bid_list(Id, account, type, bid_quantity) VALUES (1, 'acc_1', 'type_1', 8.3);
-insert into bid_list(Id, account, type, bid_quantity) VALUES (2, 'acc_2', 'type_2', 12.0);
-insert into bid_list(Id, account, type, bid_quantity) VALUES (3, 'acc_1', 'type_2', 5.5);
+insert into bid_list(bid_list_id, account, type, bid_quantity) VALUES (1, 'acc_1', 'type_1', 8.3);
+insert into bid_list(bid_list_id, account, type, bid_quantity) VALUES (2, 'acc_2', 'type_2', 12.0);
+insert into bid_list(bid_list_id, account, type, bid_quantity) VALUES (3, 'acc_1', 'type_2', 5.5);
 
 insert into curve_point(Id,curve_id, term, value) VALUES (1,1,2.0,8.3);
 insert into curve_point(Id,curve_id, term, value) VALUES (2,5,3.5,1.0);
